@@ -175,9 +175,10 @@ fn build_package(current_dir: &Path, installed_dir: &Path) -> Result<(), FrumErr
         });
     };
     debug!("make -j {}", number_of_cores().unwrap_or(2).to_string());
+    let number_of_cores = number_of_cores().unwrap_or(2).to_string();
     let make = Command::new("make")
         .arg("-j")
-        .arg(number_of_cores().unwrap_or(2).to_string())
+        .arg(&number_of_cores)
         .current_dir(&current_dir)
         .output()
         .map_err(FrumError::IoError)?;
@@ -191,6 +192,8 @@ fn build_package(current_dir: &Path, installed_dir: &Path) -> Result<(), FrumErr
     };
     debug!("make install");
     let make_install = Command::new("make")
+        .arg("-j")
+        .arg(&number_of_cores)
         .arg("install")
         .current_dir(&current_dir)
         .output()
